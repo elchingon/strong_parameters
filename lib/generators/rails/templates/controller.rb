@@ -1,5 +1,8 @@
 <% module_namespacing do -%>
 class <%= controller_class_name %>Controller < ApplicationController
+  
+  load_and_authorize_resource
+  helper_method :sort_column, :sort_direction
   # GET <%= route_url %>
   # GET <%= route_url %>.json
   def index
@@ -83,6 +86,14 @@ class <%= controller_class_name %>Controller < ApplicationController
   end
 
   private
+    # Add index sorting by default
+    def sort_column
+      <%= controller_class_name.singularize %>.column_names.include?(params[:sort]) ? params[:sort] : "created_at"
+    end
+  
+    def sort_direction
+      %w[asc desc].include?(params[:direction]) ? params[:direction] : "asc"
+    end
 
     # Use this method to whitelist the permissible parameters. Example:
     # params.require(:person).permit(:name, :age)
